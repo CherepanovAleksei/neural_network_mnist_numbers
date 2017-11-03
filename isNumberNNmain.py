@@ -18,9 +18,10 @@ out_true = np.ones((28, 28), dtype=np.float)
 out_false = np.zeros((28, 28), dtype=np.float)
 
 # random initial weights (2 layer)
+np.random.seed(1)
 weight0 = 2 * np.random.random((28, 28)) - 1
 weight1 = 2 * np.random.random((28, 28)) - 1
-weight2 = 2 * np.random.random((28, 28)) - 1
+# weight2 = 2 * np.random.random((28, 28)) - 1
 
 # training (backpropagation)
 for count in range(60000):
@@ -30,18 +31,19 @@ for count in range(60000):
     layer0 = img_in
     layer1 = sig(np.dot(layer0, weight0))
     layer2 = sig(np.dot(layer1, weight1))
-    layer3 = sig(np.dot(layer2, weight2))
+    # layer3 = sig(np.dot(layer2, weight2))
 
-    l3_error = out_true - layer3
-    l3_delta = l3_error * sig(layer3, derivative=True)
+    # l3_error = out_true - layer3
+    # l3_delta = l3_error * sig(layer3, derivative=True)
 
-    l2_error = l3_delta.dot(weight2.T)
+    # l2_error = l3_delta.dot(weight2.T)
+    l2_error = out_true - layer2
     l2_delta = l2_error * sig(layer2, derivative=True)
 
     l1_error = l2_delta.dot(weight1.T)
     l1_delta = l1_error * sig(layer1, derivative=True)
 
-    weight2 += layer2.T.dot(l3_delta)
+    # weight2 += layer2.T.dot(l3_delta)
     weight1 += layer1.T.dot(l2_delta)
     weight0 += layer0.T.dot(l1_delta)
 
@@ -50,21 +52,21 @@ for count in range(60000):
     layer0 = img_in
     layer1 = sig(np.dot(layer0, weight0))
     layer2 = sig(np.dot(layer1, weight1))
-    layer3 = sig(np.dot(layer2, weight2))
+    # layer3 = sig(np.dot(layer2, weight2))
 
-    l3_error = out_false - layer3
-    l3_delta = l3_error * sig(layer3, derivative=True)
-
-    l2_error = l3_delta.dot(weight2.T)
+    # l3_error = out_false - layer3
+    # l3_delta = l3_error * sig(layer3, derivative=True)
+    #
+    # l2_error = l3_delta.dot(weight2.T)
+    l2_error = out_false - layer2
     l2_delta = l2_error * sig(layer2, derivative=True)
 
     l1_error = l2_delta.dot(weight1.T)
     l1_delta = l1_error * sig(layer1, derivative=True)
 
-    weight2 += layer2.T.dot(l3_delta)
+    # weight2 += layer2.T.dot(l3_delta)
     weight1 += layer1.T.dot(l2_delta)
     weight0 += layer0.T.dot(l1_delta)
-
 
 # testing
 with open('output/right_output.txt',  'w') as right_output:
@@ -74,8 +76,8 @@ with open('output/right_output.txt',  'w') as right_output:
         layer0 = img_in
         layer1 = sig(np.dot(layer0, weight0))
         layer2 = sig(np.dot(layer1, weight1))
-        layer3 = sig(np.dot(layer2, weight2))
-        right_output.write("%.10f" % layer3.mean())
+        # layer3 = sig(np.dot(layer2, weight2))
+        right_output.write("%.10f" % layer2.mean())
         right_output.write(data.display(test_images[count]) + '\n\n')
 
 with open('output/wrong_output.txt', 'w') as wrong_output:
@@ -84,44 +86,7 @@ with open('output/wrong_output.txt', 'w') as wrong_output:
         layer0 = img_in
         layer1 = sig(np.dot(layer0, weight0))
         layer2 = sig(np.dot(layer1, weight1))
-        layer3 = sig(np.dot(layer2, weight2))
-        wrong_output.write("%.10f" % layer3.mean())
+        # layer3 = sig(np.dot(layer2, weight2))
+        wrong_output.write("%.10f" % layer2.mean())
         img_in.shape = 784
         wrong_output.write(data.display(img_in) + '\n\n')
-img_in = np.asarray([[255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-
-
-layer0 = img_in
-layer1 = sig(np.dot(layer0, weight0))
-layer2 = sig(np.dot(layer1, weight1))
-layer3 = sig(np.dot(layer2, weight2))
-print("%.10f" % layer3.mean())
-img_in.shape = 784
-print(data.display(img_in) + '\n\n')
